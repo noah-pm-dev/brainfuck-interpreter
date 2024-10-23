@@ -1,6 +1,7 @@
-## Run with hexdump at end: python3 int_copy.py <file> && hexdump -e'"%07.8_ad  " 8/1 "%03u " "  " 8/1 "%03u " "  |"' -e'16/1  "%_p"  "|\n"' -e'"%07.8_Ad\n"' mem.dat
+# Run with hexdump at end: python3 int.py <file> && hexdump -e'"%07.8_ad  " 8/1 "%03u " "  " 8/1 "%03u " "  |"' -e'16/1  "%_p"  "|\n"' -e'"%07.8_Ad\n"' mem.dat
 
 from sys import argv, stdout, stdin
+import getopt
 
 def find(string, char):
     return [i for i, ltr in enumerate(string) if ltr == char]
@@ -46,7 +47,20 @@ def check_char(cmd):
     #     update_mem('+', ord(stdin.read(1)))    
 
 
-file = argv[1]
+try:
+    arguments, values = getopt.getopt(argv[1:], 'mf:')
+except getopt.GetoptError:
+    stdout.write("Please specify a file name after -f!\n")
+    exit(0)
+
+show_mem = False
+file = ''
+for a in arguments:
+    if a[0] == '-m':
+        show_mem = True
+    elif a[0] == '-f':
+        file = a[1]
+
 
 with open(file, 'r') as bf:
     code = bf.read()
