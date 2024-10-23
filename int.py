@@ -42,9 +42,9 @@ def check_char(cmd):
     elif cmd == '.':
         stdout.write(chr(mem[pointer]))
         stdout.flush()
+    elif cmd == ',':
+        update_mem('+', ord(stdin.read(1)))    
     return None
-    # elif cmd == ',':
-    #     update_mem('+', ord(stdin.read(1)))    
 
 
 try:
