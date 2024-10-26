@@ -2,8 +2,6 @@
 
 import sys
 import getopt
-# import termios
-# import tty
 
 def peek(stack):
     if stack:
@@ -11,17 +9,10 @@ def peek(stack):
     else:
         return None
 
-# def getch():
-#     fd = sys.stdin.fileno()
-#     old_settings = termios.tcgetattr(fd)
-#     try:
-#         tty.setraw(sys.stdin.fileno())
-#         ch = sys.stdin.read(1)
-#     finally:
-#         termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
-#     sys.stdout.write(ch)
-#     sys.exit(0)
-#     return ch
+def flushI():
+    while sys.stdin.read(1) != '\n':
+        pass
+
 
 def update_mem(operation, num):
     global mem
@@ -56,8 +47,8 @@ def check_char(cmd):
         sys.stdout.write(chr(mem[pointer]))
         sys.stdout.flush()
     elif cmd == ',':
-        update_mem('r', ord(sys.stdin.seek(0, 2)))
-        # sys.stdin.flush()
+        update_mem('r', ord(sys.stdin.read(1)))
+        flushI()
     return None
 
 
