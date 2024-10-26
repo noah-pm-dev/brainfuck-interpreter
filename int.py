@@ -1,16 +1,27 @@
 # Run with hexdump at end: python3 int.py <file> && hexdump -e'"%07.8_ad  " 8/1 "%03u " "  " 8/1 "%03u " "  |"' -e'16/1  "%_p"  "|\n"' -e'"%07.8_Ad\n"' mem.dat
 
-from sys import argv, stdout, stdin
+import sys
 import getopt
-
-def find(string, char):
-    return [i for i, ltr in enumerate(string) if ltr == char]
+# import termios
+# import tty
 
 def peek(stack):
     if stack:
         return stack[-1]
     else:
         return None
+
+# def getch():
+#     fd = sys.stdin.fileno()
+#     old_settings = termios.tcgetattr(fd)
+#     try:
+#         tty.setraw(sys.stdin.fileno())
+#         ch = sys.stdin.read(1)
+#     finally:
+#         termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+#     sys.stdout.write(ch)
+#     sys.exit(0)
+#     return ch
 
 def update_mem(operation, num):
     global mem
@@ -20,7 +31,9 @@ def update_mem(operation, num):
             mem[pointer] = mem[pointer] + num
         except ValueError:
             mem[pointer] = 0 + (num - 1) # Overflow
-    else:
+    elif operation == 'r':
+        mem[pointer] = num
+    elif operation == '-':
         try:
             mem[pointer] = mem[pointer] - num
         except ValueError:
@@ -40,18 +53,19 @@ def check_char(cmd):
         if pointer != 0:
             pointer -= 1
     elif cmd == '.':
-        stdout.write(chr(mem[pointer]))
-        stdout.flush()
+        sys.stdout.write(chr(mem[pointer]))
+        sys.stdout.flush()
     elif cmd == ',':
-        update_mem('+', ord(stdin.read(1)))    
+        update_mem('r', ord(sys.stdin.seek(0, 2)))
+        # sys.stdin.flush()
     return None
 
 
 try:
-    arguments, values = getopt.getopt(argv[1:], 'mf:')
+    arguments, values = getopt.getopt(sys.argv[1:], 'mf:')
 except getopt.GetoptError:
-    stdout.write("Please specify a file name after -f!\n")
-    exit(0)
+    sys.stdout.write("Please specify a file name after '-f'!\n")
+    sys.exit(0)
 
 show_mem = False
 file = ''
@@ -118,5 +132,5 @@ with open('mem.dat', 'wb+') as dat:
     dat.write(mem)
 
 
-stdout.write('\n\n')
+sys.stdout.write('\n\n')
 
