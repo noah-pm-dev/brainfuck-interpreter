@@ -77,7 +77,7 @@ try:
     with open(filename, 'r') as bf:
         code = bf.read()
 except FileNotFoundError:
-    sys.stdout.write("\nInvalid filename. Please enter a valid brainfuck file directly after the -f option!\nIncorrect: `int.py -mfv hello_world.bf`\nCorrect: `int.py -mvf hello_world.bf`\n\n")
+    sys.stdout.write("\nInvalid filename.\nSee `--help` for detailed usage instructions.\n\n")
     sys.exit(0)
 
 
